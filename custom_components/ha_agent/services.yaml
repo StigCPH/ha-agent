@@ -1,0 +1,30 @@
+analyze_weekplan:
+  name: Analyze school plan
+  description: Generate or reuse an evidence-checked preview. Does not create or send reminders.
+  fields:
+    entry_id:
+      name: Config entry
+      selector:
+        config_entry:
+          integration: ha_agent
+    source_entity:
+      name: School plan source
+      selector:
+        entity:
+          domain: sensor
+    week_offset:
+      name: Week offset
+      description: 0 for the current week, 1 for next week.
+      selector:
+        select:
+          options:
+            - label: Current week
+              value: "0"
+            - label: Next week
+              value: "1"
+    force:
+      name: Retry explicitly
+      description: Submit a new AI request even if this source was already analyzed or its previous attempt is uncertain.
+      default: false
+      selector:
+        boolean:

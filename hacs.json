@@ -1,0 +1,6 @@
+{
+  "name": "HA",
+  "homeassistant": "2026.10.0",
+  "filename": "ha_agent.zip",
+  "zip_release": true
+}

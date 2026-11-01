@@ -1,0 +1,11 @@
+__pycache__/
+.pytest_cache/
+.venv/
+dist/
+*.pem
+*.pfx
+*.key
+.env*
+.storage/
+_private/
+*.log

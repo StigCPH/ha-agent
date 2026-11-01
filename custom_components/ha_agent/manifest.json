@@ -1,0 +1,18 @@
+{
+  "domain": "ha_agent",
+  "name": "HA",
+  "codeowners": [
+    "@StigCPH"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "ai_task",
+    "conversation"
+  ],
+  "documentation": "https://github.com/StigCPH/ha-agent",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/StigCPH/ha-agent/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
