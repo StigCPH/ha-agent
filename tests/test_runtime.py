@@ -64,6 +64,10 @@ async def test_invalid_evidence_does_not_replace_last_good_preview(setup):
     client.generate.return_value={"data":{"summary":"Bad","items":[{**RESULT["items"][0],"source_quote":"Invented"}]},"response_id":"resp_bad","usage":{}}
     with pytest.raises(ValueError):await runtime.analyze()
     assert runtime.preview["source_key"]==good["source_key"]
+    fresh=module.Runtime(runtime.hass,runtime.entry,client)
+    await fresh.load()
+    assert fresh.last_response["response_id"]=="resp_bad"
+    assert fresh.last_response["data"]["summary"]=="Bad"
 @pytest.mark.asyncio
 async def test_unavailable_source_has_no_model_call(setup):
     runtime,state,client=setup

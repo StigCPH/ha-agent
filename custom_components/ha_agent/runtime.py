@@ -16,15 +16,17 @@ class Runtime:
         self.store = Store(hass, 1, f"{DOMAIN}.{entry.entry_id}.preview")
         self.preview: dict[str, Any] = {}
         self.attempts: dict[str, str] = {}
+        self.last_response: dict[str, Any] = {}
         self.lock = asyncio.Lock()
 
     async def load(self):
         saved = await self.store.async_load() or {}
         self.preview = saved.get("preview", {})
         self.attempts = saved.get("attempts", {})
+        self.last_response = saved.get("last_response", {})
 
     async def save(self):
-        await self.store.async_save({"preview": self.preview, "attempts": self.attempts})
+        await self.store.async_save({"preview": self.preview, "attempts": self.attempts, "last_response": self.last_response})
         async_dispatcher_send(self.hass, SIGNAL + self.entry.entry_id)
 
     async def analyze(self, source_entity=None, week_offset=None, force=False):
@@ -59,6 +61,10 @@ class Runtime:
                 reply = await self.client.generate(
                     [{"role": "user", "content": task_instructions(text, start)}], PLAN_SCHEMA,
                 )
+                # Retain a completed provider response before semantic validation,
+                # so rejected evidence can be reviewed without another paid call.
+                self.last_response = {**reply, "source_key": key}
+                await self.save()
                 result = validate_plan(reply["data"], text, start)
                 self.preview = {
                     **result, "source_key": key, "source_entity": entity,
